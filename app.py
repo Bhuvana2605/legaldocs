@@ -1,25 +1,13 @@
 import streamlit as st
 import pdfplumber
-import subprocess
-import sys
-import spacy
-
-nlp = spacy.load("en_core_web_sm")
-
-
 import openai
-
-# For public app, use:
-# openai.api_key = st.secrets["OPENAI_API_KEY"]
-# For local/manual, keep your input box.
-api_key = st.sidebar.text_input("OpenAI API Key (leave blank for rule-based only)", type="password")
-if api_key:
-    openai.api_key = api_key
 
 st.title("Smart Legal Lens (Prototype)")
 
+# For Streamlit Cloud deployment, the API key is set in st.secrets!
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-uploaded_file = st.file_uploader("Upload a legal document (PDF or TXT)", type=['pdf','txt'])
+uploaded_file = st.file_uploader("Upload a legal document (PDF or TXT)", type=['pdf', 'txt'])
 
 if uploaded_file:
     # Step 1: Parse document
@@ -30,36 +18,29 @@ if uploaded_file:
         text = uploaded_file.read().decode(errors="replace")
     
     st.subheader("Contract Preview")
-    st.write(text[:1000])  # Preview of document
+    st.write(text[:1000] + "...")  # Preview first 1000 characters
 
-    # Step 2: Extract and display entities
-    doc = nlp(text)
-    st.subheader("Extracted Entities")
-    ents = [(ent.label_, ent.text) for ent in doc.ents]
-    if ents:
-        st.table(ents)
-    else:
-        st.info("No named entities found in the sample text.")
-
-    # Step 3: (Optional) Ask OpenAI to simplify a sample paragraph/section
+    # Step 2: AI Clause Simplification
     st.subheader("AI Clause Simplification")
     sample_clause = text[:500]  # Take first 500 chars as a demo clause
-    if api_key:
-        prompt = f"Explain the following legal contract clause in simple terms for a non-lawyer:\n---\n{sample_clause}\n---"
-        try:
-            response = openai.Completion.create(
-                engine="text-davinci-003",  # Use gpt-4/gpt-3.5-turbo-16k if available for your account
-                prompt=prompt,
-                max_tokens=150,
-                temperature=0.5,
-            )
-            st.success(response.choices[0].text.strip())
-        except Exception as e:
-            st.error(f"Error from OpenAI: {e}")
-    else:
-        st.write("Add your OpenAI API key in the sidebar for clause simplification.")
 
-    # Step 4: Static demo flowchart (SVG/Markdown, for visual touch)
+    prompt = (
+        "You are a legal assistant. Summarize the following contract clause for a non-lawyer. "
+        "Also extract any parties, dates, monetary amounts, and deadlines in a small table.\n---\n"
+        f"{sample_clause}\n---"
+    )
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-003",  # Or "gpt-3.5-turbo-instruct"
+            prompt=prompt,
+            max_tokens=250,
+            temperature=0.2,
+        )
+        st.success(response.choices[0].text.strip())
+    except Exception as e:
+        st.error(f"Error from OpenAI: {e}")
+
+    # Step 3: Static demo flowchart (simple Markdown)
     st.subheader("Sample Flowchart")
     st.markdown("""
     ```
@@ -71,8 +52,3 @@ if uploaded_file:
     
 else:
     st.info("Upload a PDF or TXT contract to get started!")
-
-
-
-
-
