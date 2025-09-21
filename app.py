@@ -18,7 +18,9 @@ if uploaded_file:
 
     st.subheader("Contract Preview")
     st.write(text[:1000] + "...")
-
+python
+for m in genai.list_models():
+    st.write(m.name, m.supported_generation_methods)
     st.subheader("Gemini AI Clause Simplification")
     sample_clause = text[:500]
 
@@ -29,7 +31,7 @@ if uploaded_file:
     )
 
     try:
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel("gemini-pro")
         response = model.generate_content(prompt)
         st.success(response.text)
     except Exception as e:
@@ -47,3 +49,4 @@ else:
     st.info("Upload a PDF or TXT contract to get started!")
 
    
+
