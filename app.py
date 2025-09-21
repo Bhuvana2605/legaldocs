@@ -18,11 +18,6 @@ if uploaded_file:
 
     st.subheader("Contract Preview")
     st.write(text[:1000] + "...")
-python
-for m in genai.list_models():
-    st.write(m.name, m.supported_generation_methods)
-    st.subheader("Gemini AI Clause Simplification")
-    sample_clause = text[:500]
 
     prompt = (
         "You are a legal assistant. Summarize the following contract clause for a non-lawyer. "
@@ -48,5 +43,11 @@ for m in genai.list_models():
 else:
     st.info("Upload a PDF or TXT contract to get started!")
 
+for m in genai.list_models():
+    st.write(m.name, m.supported_generation_methods)
+    st.subheader("Gemini AI Clause Simplification")
+    sample_clause = text[:500]
+
    
+
 
