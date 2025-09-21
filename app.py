@@ -1,6 +1,5 @@
 import streamlit as st
 import pdfplumber
-import openai
 import google.generativeai as genai
 
 st.title("Smart Legal Lens (Prototype)")
@@ -53,4 +52,5 @@ if uploaded_file:
     
 else:
     st.info("Upload a PDF or TXT contract to get started!")
+
 
