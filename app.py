@@ -18,6 +18,7 @@ if uploaded_file:
 
     st.subheader("Contract Preview")
     st.write(text[:1000] + "...")
+    sample_clause = text[:500]  # <-- DEFINE sample_clause
 
     prompt = (
         "You are a legal assistant. Summarize the following contract clause for a non-lawyer. "
@@ -45,6 +46,7 @@ else:
 
 
    
+
 
 
 
