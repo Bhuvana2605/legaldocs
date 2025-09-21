@@ -1,17 +1,27 @@
 import streamlit as st
 import pdfplumber
-import spacy
+import subprocess
+import sys
+
+try:
+    import spacy
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+    import spacy
+    nlp = spacy.load("en_core_web_sm")
+
 import openai
 
-# Load spaCy NER
-nlp = spacy.load("en_core_web_sm")
-
-st.title("Smart Legal Lens (Prototype)")
-
-# Sidebar for API key (for hackathons, let user paste it or use st.secrets)
+# For public app, use:
+# openai.api_key = st.secrets["OPENAI_API_KEY"]
+# For local/manual, keep your input box.
 api_key = st.sidebar.text_input("OpenAI API Key (leave blank for rule-based only)", type="password")
 if api_key:
     openai.api_key = api_key
+
+st.title("Smart Legal Lens (Prototype)")
+
 
 uploaded_file = st.file_uploader("Upload a legal document (PDF or TXT)", type=['pdf','txt'])
 
@@ -65,4 +75,5 @@ if uploaded_file:
     
 else:
     st.info("Upload a PDF or TXT contract to get started!")
+
 
