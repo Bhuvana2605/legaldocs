@@ -43,11 +43,8 @@ if uploaded_file:
 else:
     st.info("Upload a PDF or TXT contract to get started!")
 
-for m in genai.list_models():
-    st.write(m.name, m.supported_generation_methods)
-    st.subheader("Gemini AI Clause Simplification")
-    sample_clause = text[:500]
 
    
+
 
 
