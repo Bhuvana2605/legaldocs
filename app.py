@@ -3,13 +3,16 @@ import pdfplumber
 import subprocess
 import sys
 
-try:
+def install_spacy_model():
     import spacy
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
-    import spacy
-    nlp = spacy.load("en_core_web_sm")
+    try:
+        spacy.load("en_core_web_sm")
+    except OSError:
+        subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+    # Now, load the model and return it
+    return spacy.load("en_core_web_sm")
+
+nlp = install_spacy_model()
 
 import openai
 
@@ -75,5 +78,6 @@ if uploaded_file:
     
 else:
     st.info("Upload a PDF or TXT contract to get started!")
+
 
 
