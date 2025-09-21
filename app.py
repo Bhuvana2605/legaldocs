@@ -1,11 +1,12 @@
 import streamlit as st
 import pdfplumber
 import openai
+import google.generativeai as genai
 
 st.title("Smart Legal Lens (Prototype)")
 
-# For Streamlit Cloud deployment, the API key is set in st.secrets!
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# Set your Gemini key (you can also load it from st.secrets if you want)
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 uploaded_file = st.file_uploader("Upload a legal document (PDF or TXT)", type=['pdf', 'txt'])
 
@@ -52,3 +53,4 @@ if uploaded_file:
     
 else:
     st.info("Upload a PDF or TXT contract to get started!")
+
